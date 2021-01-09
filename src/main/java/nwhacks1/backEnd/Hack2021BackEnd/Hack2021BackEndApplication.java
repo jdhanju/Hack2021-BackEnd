@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Hack2021BackEndApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(Hack2021BackEndApplication.class, args);
 	}
 
