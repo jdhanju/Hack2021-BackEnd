@@ -115,7 +115,7 @@ public class BackEndController {
                 UserInfo user = list.get(i);
 
                 try {
-                    URL url = new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + address + "&destination=" + user.getAddress() +"&key=AIzaSyAWCM61-9R8V2Ij8jm0rIQZlyeE0nstmFs");
+                    URL url = new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + address + "&destination=" + user.getAddress() +"&key=Enter Key Here");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.getInputStream();
