@@ -12,7 +12,8 @@ public class UserInfo {
     private boolean offeringRides;
     private String userName;
     private String password;
-    private  String address;
+    private String address;
+    private int distance;
 
     public UserInfo(String firstName, String lastName, String email, String phoneNumber, String userName, String password, String address){
         this.firstName = firstName;
@@ -25,6 +26,7 @@ public class UserInfo {
         this.needRide = false;
         this.offeringRides = false;
         this.address = address;
+        this.distance = 0;
     }
 
     public String getFirstName() {
@@ -97,5 +99,21 @@ public class UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

@@ -3,6 +3,7 @@ package nwhacks1.backEnd.Hack2021BackEnd;
 import User.UserInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import com.google.maps.GeoApiContext;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 import org.apache.catalina.User;
@@ -11,15 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class BackEndController {
     //List of Users
-    ArrayList<UserInfo> list = new ArrayList<UserInfo>();
+    List<UserInfo> list = new ArrayList<UserInfo>();
+    private static final String API_KEY = "YOUR_API_KEY";
+    private static final GeoApiContext context = null;
 
     /**
      * GET request to confirm proper login.
@@ -68,15 +76,81 @@ public class BackEndController {
      * @param response
      */
     @GetMapping("api/user/need")
-    public void needRide(@RequestParam(value = "username") String username, HttpServletResponse response){
+    public void needRide(@RequestParam(value = "username") String username, @RequestParam(value = "address") String address,HttpServletResponse response){
         for(int i = 0; i < list.size(); i++){
             if(list.get(i).getUserName().equals(username)){
                 list.get(i).setNeedRide(true);
+                list.get(i).setAddress(address);
                 response.setStatus(203);
                 return;
             }
         }
         response.setStatus(403);
+    }
+
+    @GetMapping("api/user/give")
+    public void giveRide(@RequestParam(value = "username") String username, HttpServletResponse response){
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).getUserName().equals(username)) {
+                list.get(i).setOfferingRides(true);
+                response.setStatus(205);
+                return;
+            }
+        }
+        response.setStatus(405);
+    }
+
+
+    @GetMapping("api/user/list/bylocation")
+    public List<UserInfo> listOfRidersByLocation(@RequestParam(value = "username") String username, @RequestParam(value = "address") String address, HttpServletResponse response){
+        List <UserInfo> riders = new ArrayList<UserInfo>();
+        int distance;
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).isNeedRide()) {
+                UserInfo user = list.get(i);
+
+                try {
+                    URL url = new URL("https://maps.googleapis.com/maps/api/directions/json?origin=" + address + "&destination=" + user.getAddress() +"&key=AIzaSyAWCM61-9R8V2Ij8jm0rIQZlyeE0nstmFs");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String output = br.lines().collect(Collectors.joining());
+                    //System.out.println(output);
+                    int index = output.indexOf("distance");
+                    String subOutput = output.substring(index, index + 50);
+                    //String subOutput = output.substring("distance");
+                    int indexOfIndex = subOutput.indexOf("text");
+                    String subOfSubString = subOutput.substring(indexOfIndex);
+                    String subOfSubOfSubString = subOfSubString.substring(9, 12);
+                    distance = Integer.parseInt(subOfSubString);
+                    user.setDistance(distance);
+                    System.out.println(distance);
+                    connection.disconnect();
+                    riders.add(user);
+
+                } catch (Exception e) {
+                    response.setStatus(406);
+                    e.printStackTrace();
+                }
+            }
+        }
+        //order the list by smallest distance
+        int smallest;
+        for(int i = 0; i < riders.size(); i++){
+            smallest = riders.get(i).getDistance();
+            for(int j = 0; j < riders.size(); j++){
+                if(riders.get(j).getDistance() < smallest){
+                    smallest = riders.get(i).getDistance();
+                    UserInfo tmp = riders.get(i);
+                    riders.set(i, riders.get(i));
+                    riders.set(j, tmp);
+                }
+            }
+
+        }
+        response.setStatus(206);
+        return riders;
     }
 
 
@@ -103,6 +177,9 @@ public class BackEndController {
             String line = br.readLine();
             while(line !=null){
                 UserInfo info = new Gson().fromJson(line, UserInfo.class);
+                info.setOfferingRides(false);
+                info.setNeedRide(false);
+                info.setDistance(0);
                 System.out.println(info.getUserName());
                 list.add(info);
                 line = br.readLine();
@@ -110,7 +187,5 @@ public class BackEndController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }
