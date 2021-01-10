@@ -1,2 +1,2 @@
-{"firstName": "stew", "lastName": "soup", "email": "stew@stew.ca", "phoneNumber": "6047233035", "userName": "notstew", "password":  "12345abcd", "address": "123 main st"}
-{"firstName": "stew", "lastName": "soup", "email": "stew@stew.ca", "phoneNumber": "6047233035", "userName": "notstewforsure", "password":  "12345abcd", "address": "123 main st"}
+{"firstName": "stew", "lastName": "soup", "email": "stew@stew.ca", "phoneNumber": "6047233035", "userName": "stew", "password":  "stew", "address": "vancouver"}
+{"firstName": "stew", "lastName": "soup", "email": "stew@stew.ca", "phoneNumber": "6047233035", "userName": "notstewforsure", "password":  "12345abcd", "address": "toronto"}

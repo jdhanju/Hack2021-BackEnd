@@ -7,6 +7,9 @@ import com.google.maps.GeoApiContext;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 import org.apache.catalina.User;
+import org.springframework.context.annotation.DeferredImportSelector;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,6 +45,7 @@ public class BackEndController {
             if(list.get(i).getUserName().equals(username)){
                 if(list.get(i).getPassword().equals(password)){
                     //successful login
+                    System.out.println("Log in successful!");
                     response.setStatus(201);
                     return; //completed
                 }
@@ -119,7 +124,6 @@ public class BackEndController {
                     //System.out.println(output);
                     int index = output.indexOf("distance");
                     String subOutput = output.substring(index, index + 50);
-                    //String subOutput = output.substring("distance");
                     int indexOfIndex = subOutput.indexOf("text");
                     String subOfSubString = subOutput.substring(indexOfIndex);
                     String subOfSubOfSubString = subOfSubString.substring(9, 12);
@@ -143,7 +147,7 @@ public class BackEndController {
                 if(riders.get(j).getDistance() < smallest){
                     smallest = riders.get(i).getDistance();
                     UserInfo tmp = riders.get(i);
-                    riders.set(i, riders.get(i));
+                    riders.set(i, riders.get(j));
                     riders.set(j, tmp);
                 }
             }
