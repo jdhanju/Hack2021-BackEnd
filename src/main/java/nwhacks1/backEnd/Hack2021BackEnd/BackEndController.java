@@ -61,6 +61,25 @@ public class BackEndController {
         response.setStatus(202);
     }
 
+
+    /**
+     * Updates the users account to needing a ride
+     * @param username
+     * @param response
+     */
+    @GetMapping("api/user/need")
+    public void needRide(@RequestParam(value = "username") String username, HttpServletResponse response){
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).getUserName().equals(username)){
+                list.get(i).setNeedRide(true);
+                response.setStatus(203);
+                return;
+            }
+        }
+        response.setStatus(403);
+    }
+
+
     /**
      * startup method runs the code needed before the server starts
      * This method will just be fetching data from the json file
@@ -83,7 +102,8 @@ public class BackEndController {
             BufferedReader br = new BufferedReader(new FileReader("data.json"));
             String line = br.readLine();
             while(line !=null){
-                UserInfo info = new Gson().fromJson(br, UserInfo.class);
+                UserInfo info = new Gson().fromJson(line, UserInfo.class);
+                System.out.println(info.getUserName());
                 list.add(info);
                 line = br.readLine();
             }

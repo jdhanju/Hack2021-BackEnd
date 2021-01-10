@@ -12,17 +12,19 @@ public class UserInfo {
     private boolean offeringRides;
     private String userName;
     private String password;
+    private  String address;
 
-    public UserInfo(String firstName, String lastName, String email, String phoneNumber, String userName, String password){
+    public UserInfo(String firstName, String lastName, String email, String phoneNumber, String userName, String password, String address){
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.userName = userName;
         this.password = password;
-        numberOfTokens = 1;
-        needRide = false;
-        offeringRides = false;
+        this.numberOfTokens = 1;
+        this.needRide = false;
+        this.offeringRides = false;
+        this.address = address;
     }
 
     public String getFirstName() {
